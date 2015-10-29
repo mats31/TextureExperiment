@@ -1,6 +1,6 @@
 'use strict';
 
-import Cube from './objects/Cube';
+import Grass from './objects/Grass';
 import THREE from 'three';
 window.THREE = THREE;
 
@@ -8,21 +8,27 @@ export default class Webgl {
   constructor(width, height) {
     this.scene = new THREE.Scene();
 
-    this.camera = new THREE.PerspectiveCamera(50, width / height, 1, 1000);
+    this.camera = new THREE.PerspectiveCamera(50, width / height, 1, 5000);
+    this.camera.position.x = 5;
+    this.camera.position.y = 20;
     this.camera.position.z = 100;
 
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.setSize(width, height);
-    this.renderer.setClearColor(0x262626);
+    this.renderer.setClearColor(0x808080);
+
+    this.scene.add( new THREE.AmbientLight(0xFFFFFF) );
+    let directional = new THREE.DirectionalLight(0xFFFFFF);
+    directional.position.set( 10,10,10);
+    this.scene.add( directional );
 
     this.usePostprocessing = true;
     this.composer = new WAGNER.Composer(this.renderer);
     this.composer.setSize(width, height);
     this.initPostprocessing();
 
-    this.cube = new Cube();
-    this.cube.position.set(0, 0, 0);
-    this.scene.add(this.cube);
+    this.grass = new Grass();
+    this.scene.add(this.grass);
   }
 
   initPostprocessing() {
@@ -52,7 +58,5 @@ export default class Webgl {
       this.renderer.clear();
       this.renderer.render(this.scene, this.camera);
     }
-
-    this.cube.update();
   }
 }
