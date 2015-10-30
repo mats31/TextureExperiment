@@ -43,37 +43,17 @@ export default class Grass extends THREE.Object3D {
 
   instanceGrass(x,y,z,height,mat) {
     let modelGeometry = new THREE.CylinderGeometry( 0.9, 0.0, height, 3, 5 );
-    let positions = new Float32Array( modelGeometry.vertices.length * 3 );
-    let faces = new Float32Array( modelGeometry.faces.length * 3 );
     let windFactors = new Float32Array( modelGeometry.vertices.length );
 
     for (var i = 0; i < modelGeometry.vertices.length; i++) {
       let vertex = modelGeometry.vertices[i];
-      let faceVertex = modelGeometry.faces[i].normal;
       let r = (vertex.y / height) + 0.5;
-
-      vertex.toArray(positions, i * 3);
-      // faces[i *3+0] = modelGeometry.faces[i].a;
-      // faces[i*3+1] = modelGeometry.faces[i].b;
-      // faces[i*3+2] = modelGeometry.faces[i].c;
-      faceVertex.toArray(faces, i * 3);
       windFactors[i] = r * r * r;
     };
-    //console.log(modelGeometry.vertices);
-    //console.log(positions);
 
-    let geometry = new THREE.BufferGeometry();
-    console.log(modelGeometry);
-    console.log(geometry);
+    let geometry = new THREE.BufferGeometry().fromGeometry(modelGeometry);
 
-    geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
-    geometry.addAttribute( 'normal', new THREE.BufferAttribute( faces, 3 ) );
     geometry.addAttribute( 'windFactor', new THREE.BufferAttribute( windFactors, 1 ) );
-    // for (var i = 0; i < geometry.vertices.length; i++) {
-    //   let v = geometry.vertices[i];
-    //   let r = (v.y / height) + 0.5;
-    //   this.material.attributes.windFactor.value[i] = r * r * r;
-    // };
     let mesh = new THREE.Mesh( geometry, this.windMaterial );
     mesh.position.set( x, y, z );
     
