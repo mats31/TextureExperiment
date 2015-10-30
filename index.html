@@ -22,5 +22,16 @@
     WAGNER.vertexShadersPath = './build/vendors/wagner/vertex-shaders/';
     WAGNER.fragmentShadersPath = './build/vendors/wagner/fragment-shaders/';
   </script>
+  <script type="x-shader/x-vertex" id="vertexshader">
+
+    void main() {
+
+      vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+
+      gl_Position = projectionMatrix * mvPosition;
+
+    }
+
+  </script>
 </body>
 </html>
