@@ -10,8 +10,8 @@ export default class Webgl {
 
     this.camera = new THREE.PerspectiveCamera(50, width / height, 1, 5000);
     this.camera.position.x = 5;
-    this.camera.position.y = 20;
-    this.camera.position.z = 100;
+    this.camera.position.y = 10;
+    this.camera.position.z = 60;
 
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.setSize(width, height);
@@ -22,13 +22,13 @@ export default class Webgl {
     directional.position.set( 10,10,10);
     this.scene.add( directional );
 
-    this.usePostprocessing = true;
+    this.usePostprocessing = false;
     this.composer = new WAGNER.Composer(this.renderer);
     this.composer.setSize(width, height);
     this.initPostprocessing();
 
     this.grass = new Grass();
-    this.scene.add(this.grass);
+    this.scene.add(this.grass); 
   }
 
   initPostprocessing() {
@@ -56,7 +56,11 @@ export default class Webgl {
     } else {
       this.renderer.autoClear = false;
       this.renderer.clear();
+      if (typeof this.grass.noiseScene != 'undefined') {
+        this.renderer.render(this.grass.noiseScene, this.grass.noiseCameraOrtho, this.grass.noiseMap, true);
       this.renderer.render(this.scene, this.camera);
     }
+    };
+    this.grass.update();
   }
 }
