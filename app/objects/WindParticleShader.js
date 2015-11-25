@@ -6,7 +6,7 @@ export default class WindParticleShader {
 
     constructor() {
         this.uniforms =  THREE.UniformsUtils.merge( [
-            THREE.UniformsLib[ "particle" ],
+            THREE.UniformsLib[ "points" ],
             THREE.UniformsLib[ "shadowmap" ],
             {
                 "diffuseMultiplier": { type: "f", value: 2 },

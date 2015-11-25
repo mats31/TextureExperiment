@@ -4,6 +4,7 @@ import THREE from 'three';
 import NoiseShader from './NoiseShader';
 import WindMeshShader from './WindMeshShader';
 import WindParticleShader from './WindParticleShader';
+import DDSLoader from '../loaders/DDSLoader';
 
 export default class Grass extends THREE.Object3D {
   constructor() {
@@ -17,6 +18,7 @@ export default class Grass extends THREE.Object3D {
     this.loader = new THREE.TextureLoader();
     this.grasses = [];
     this.dustSettings = [];
+    this.dustSystems = [];
     this.dustSystemMinX = -30;
     this.dustSystemMinY = 0;
     this.dustSystemMinZ = -30;
@@ -149,7 +151,12 @@ export default class Grass extends THREE.Object3D {
       params.uniforms       = shader.uniforms;
 
       let mat  = new THREE.ShaderMaterial(params);
-      mat.map = shader.uniforms["map"].value = THREE.ImageUtils.loadCompressedTexture("texture/dust" + i + ".dds");
+      let loader = new THREE.DDSLoader();
+      let matLoader = loader.load("texture/dust" + i + ".dds");
+      matLoader.minFilter = matLoader.magFilter = THREE.LinearFilter;
+      matLoader.anisotropy = 4;
+
+      mat.map = shader.uniforms["map"].value = matLoader;
       mat.size = shader.uniforms["size"].value = Math.random();
       mat.scale = shader.uniforms["scale"].value = 300.0;
       mat.transparent = true;
@@ -161,14 +168,15 @@ export default class Grass extends THREE.Object3D {
       shader.uniforms[ "windDirection" ].value = this.windDirection;
 
       let geom = new THREE.BufferGeometry();
+      const num = 130;
       geom.vertices = [];
-      num = 130;
-      let speeds = new Float32Array( 130 );
+      let positions = new Float32Array( num * 3 );
+      let speeds = new Float32Array( num );
 
-      for (var k = 0; i <= num; k++) {
-        setting = {}
+      for (var k = 0, k3 = 0; k <= num; k++, k3 +=3) {
+        let setting = {}
 
-        vert = new THREE.Vector3;
+        let vert = new THREE.Vector3;
         vert.x = setting.startX = THREE.Math.randFloat(this.dustSystemMinX,this.dustSystemMaxX);
         vert.y = setting.startY = THREE.Math.randFloat(this.dustSystemMinY,this.dustSystemMaxY);
         vert.z = setting.startZ = THREE.Math.randFloat(this.dustSystemMinZ,this.dustSystemMaxZ);
@@ -187,13 +195,16 @@ export default class Grass extends THREE.Object3D {
         setting.rangeZ = Math.random() * 5;
 
         setting.vert = vert;
-        geom.vertices.push(vert);
+        positions[ k3 + 0 ] = vert.x;
+        positions[ k3 + 1 ] = vert.y;
+        positions[ k3 + 2 ] = vert.z;
         this.dustSettings.push(setting);
       };
 
+      geom.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
       geom.addAttribute( 'speed', new THREE.BufferAttribute( speeds, 1 ) );
-      this.particleSystem = new THREE.ParticleSystem( geom, mat );
-      this.dustSystem.push( this.particleSystem );
+      this.particleSystem = new THREE.Points( geom, mat );
+      this.dustSystems.push( this.particleSystem );
       this.add(this.particleSystem);
     };
   }
