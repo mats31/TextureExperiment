@@ -152,11 +152,10 @@ export default class Grass extends THREE.Object3D {
 
       let mat  = new THREE.ShaderMaterial(params);
       let loader = new THREE.DDSLoader();
-      let matLoader = loader.load("texture/dust" + i + ".dds");
-      matLoader.minFilter = matLoader.magFilter = THREE.LinearFilter;
-      matLoader.anisotropy = 4;
-
-      mat.map = shader.uniforms["map"].value = matLoader;
+      let texture = loader.load("texture/dust" + i + ".dds");
+        texture.minFilter = texture.magFilter = THREE.LinearFilter;
+        texture.anisotropy = 4;
+        mat.map = shader.uniforms["map"].value = texture;
       mat.size = shader.uniforms["size"].value = Math.random();
       mat.scale = shader.uniforms["scale"].value = 300.0;
       mat.transparent = true;
@@ -200,7 +199,6 @@ export default class Grass extends THREE.Object3D {
         positions[ k3 + 2 ] = vert.z;
         this.dustSettings.push(setting);
       };
-
       geom.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
       geom.addAttribute( 'speed', new THREE.BufferAttribute( speeds, 1 ) );
       this.particleSystem = new THREE.Points( geom, mat );
