@@ -131,11 +131,11 @@ export default class Grass extends THREE.Object3D {
   }
 
   initTerrain() {
-    this.plane = new THREE.Mesh(new THREE.PlaneGeometry(60, 60, 2, 2), new THREE.MeshPhongMaterial({
-      map: this.noiseMap,
-      lights: false
-    }));
-    //this.plane = new THREE.Mesh( new THREE.PlaneGeometry(60, 60, 2, 2), new THREE.MeshPhongMaterial({ map: this.grassTex }));
+    // this.plane = new THREE.Mesh(new THREE.PlaneGeometry(60, 60, 2, 2), new THREE.MeshPhongMaterial({
+    //   map: this.noiseMap,
+    //   lights: false
+    // }));
+    this.plane = new THREE.Mesh( new THREE.PlaneGeometry(60, 60, 2, 2), new THREE.MeshPhongMaterial({ map: this.grassTex }));
     this.plane.rotation.x = -Math.PI/2;
     this.add( this.plane );
   }
@@ -147,9 +147,6 @@ export default class Grass extends THREE.Object3D {
       params.fragmentShader = shader.fragmentShader;
       params.vertexShader   = shader.vertexShader;
       params.uniforms       = shader.uniforms;
-      params.blending       = THREE.AdditiveBlending;
-      params.depthTest      = false;
-      params.transparent    = true;
 
       let mat  = new THREE.ShaderMaterial(params);
       let loader = new THREE.TextureLoader();
@@ -160,7 +157,7 @@ export default class Grass extends THREE.Object3D {
       // var texture =loader.load("texture/dust" + i + ".dds");
       
       mat.map = shader.uniforms["map"].value = texture;
-      mat.size = shader.uniforms["size"].value = Math.random();
+      mat.size = shader.uniforms["size"].value = Math.random() + 0.1;
       mat.scale = shader.uniforms["scale"].value = 300.0;
       mat.transparent = true;
       mat.sizeAttenuation = true;
@@ -214,7 +211,7 @@ export default class Grass extends THREE.Object3D {
       this.dustSystems.push( this.particleSystem );
       setTimeout(()=> {
         this.add(this.particleSystem);
-      }, 50);
+      }, 200);
     };
   }
 
