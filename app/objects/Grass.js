@@ -41,7 +41,6 @@ export default class Grass extends THREE.Object3D {
         this.initTerrain();
         this.initGrass();
         this.initDust();
-        console.log(this);
       },
       // Function called when download errors
       function ( xhr ) {
@@ -76,7 +75,6 @@ export default class Grass extends THREE.Object3D {
 
     geometry.addAttribute( 'windFactor', new THREE.BufferAttribute( windFactors, 1 ) );
     let mesh = new THREE.Mesh( geometry, this.windMaterial );
-    console.log(this.windMaterial.tWindForce)
     mesh.position.set( x, y, z );
     this.grasses.push(mesh);
     return mesh;
@@ -149,13 +147,19 @@ export default class Grass extends THREE.Object3D {
       params.fragmentShader = shader.fragmentShader;
       params.vertexShader   = shader.vertexShader;
       params.uniforms       = shader.uniforms;
+      params.blending       = THREE.AdditiveBlending;
+      params.depthTest      = false;
+      params.transparent    = true;
 
       let mat  = new THREE.ShaderMaterial(params);
-      let loader = new THREE.DDSLoader();
-      let texture = loader.load("texture/dust" + i + ".dds");
-        texture.minFilter = texture.magFilter = THREE.LinearFilter;
-        texture.anisotropy = 4;
-        mat.map = shader.uniforms["map"].value = texture;
+      let loader = new THREE.TextureLoader();
+      let texture = loader.load("texture/particle.png");
+      texture.needsUpdate = true;
+      
+      // var loader = new THREE.TextureLoader();
+      // var texture =loader.load("texture/dust" + i + ".dds");
+      
+      mat.map = shader.uniforms["map"].value = texture;
       mat.size = shader.uniforms["size"].value = Math.random();
       mat.scale = shader.uniforms["scale"].value = 300.0;
       mat.transparent = true;
@@ -170,6 +174,7 @@ export default class Grass extends THREE.Object3D {
       const num = 130;
       geom.vertices = [];
       let positions = new Float32Array( num * 3 );
+      let colors = new Float32Array( num * 3 );
       let speeds = new Float32Array( num );
 
       for (var k = 0, k3 = 0; k <= num; k++, k3 +=3) {
@@ -197,13 +202,19 @@ export default class Grass extends THREE.Object3D {
         positions[ k3 + 0 ] = vert.x;
         positions[ k3 + 1 ] = vert.y;
         positions[ k3 + 2 ] = vert.z;
+        colors[ k3 + 0 ] = 255;
+        colors[ k3 + 1 ] = 255;
+        colors[ k3 + 2 ] = 255;
         this.dustSettings.push(setting);
       };
       geom.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
+      geom.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) );
       geom.addAttribute( 'speed', new THREE.BufferAttribute( speeds, 1 ) );
       this.particleSystem = new THREE.Points( geom, mat );
       this.dustSystems.push( this.particleSystem );
-      this.add(this.particleSystem);
+      setTimeout(()=> {
+        this.add(this.particleSystem);
+      }, 50);
     };
   }
 
@@ -218,6 +229,11 @@ export default class Grass extends THREE.Object3D {
       vert.y = this.dustSettings[i].startY + ( Math.sin(this.dustSettings[i].sinY) * this.dustSettings[i].rangeY )
       vert.z = this.dustSettings[i].startZ + ( Math.sin(this.dustSettings[i].sinZ) * this.dustSettings[i].rangeZ )
     };
+
+    for (let j = 0, len1 = this.dustSystems.length; j < len1; j++) {
+      let obj = this.dustSystems[j];
+      obj.material.uniforms.time.value += delta;
+    }
   }
 
   update() {

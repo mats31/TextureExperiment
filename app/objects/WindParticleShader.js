@@ -93,6 +93,8 @@ export default class WindParticleShader {
 
                 "#ifdef USE_MAP",
 
+                    //"gl_FragColor = texture2D( map, gl_PointCoord );",
+                    //"gl_FragColor.w = alphaMultiplier * (1.0 + sin(time * fSpeed));",
                     "gl_FragColor = texture2D( map, vec2( gl_PointCoord.x, 1.0 - gl_PointCoord.y ) ) * diffuseMultiplier;",
                     "gl_FragColor.w = alphaMultiplier * (1.0 + sin(time * fSpeed));",
 
