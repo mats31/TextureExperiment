@@ -1,7 +1,7 @@
 # Texture Experiment
 A WebGL experiment based on Three.js and some Shaders. I try to reproduce the case study ["Find Your Way To OZ"](http://www.html5rocks.com/en/tutorials/casestudies/oz/?redirect_from_locale=fr) in order to learn how to use texture as noise. Here, the wind is simulated by the perlin noise.
 
-Demo available [here](http://mathis-biabiany.fr/webgl/texturenoise/).
+Demo available [here](http://mathis-biabiany.fr/lab/texturenoise/).
 
 #### Technologies :
 * ThreeJs
