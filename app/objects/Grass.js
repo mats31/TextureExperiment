@@ -109,7 +109,7 @@ export default class Grass extends THREE.Object3D {
     this.noiseMap  = new THREE.WebGLRenderTarget( 256, 256, {
       minFilter: THREE.LinearMipmapLinearFilter,
       magFilter: THREE.LinearFilter,
-      format: THREE.RGBFormat 
+      format: THREE.RGBFormat
     });
     this.noiseShader = new NoiseShader()
     this.noiseShader.uniforms.vScale.value.set(0.3,0.3)
@@ -152,10 +152,10 @@ export default class Grass extends THREE.Object3D {
       let loader = new THREE.TextureLoader();
       let texture = loader.load("texture/particle.png");
       texture.needsUpdate = true;
-      
+
       // var loader = new THREE.TextureLoader();
       // var texture =loader.load("texture/dust" + i + ".dds");
-      
+
       mat.map = shader.uniforms["map"].value = texture;
       mat.size = shader.uniforms["size"].value = Math.random() + 0.1;
       mat.scale = shader.uniforms["scale"].value = 300.0;
@@ -183,7 +183,7 @@ export default class Grass extends THREE.Object3D {
         vert.z = setting.startZ = THREE.Math.randFloat(this.dustSystemMinZ,this.dustSystemMaxZ);
 
         setting.speed = speeds[k] = 1 + Math.random() * 10;
-        
+
         setting.sinX = Math.random();
         setting.sinXR = Math.random() < 0.5 ? 1 : -1;
         setting.sinY = Math.random();
@@ -220,7 +220,7 @@ export default class Grass extends THREE.Object3D {
       let vert = this.dustSettings[i].vert
       this.dustSettings[i].sinX = this.dustSettings[i].sinX + (( 0.002 * this.dustSettings[i].speed) * this.dustSettings[i].sinXR)
       this.dustSettings[i].sinY = this.dustSettings[i].sinY + (( 0.002 * this.dustSettings[i].speed) * this.dustSettings[i].sinYR)
-      this.dustSettings[i].sinZ = this.dustSettings[i].sinZ + (( 0.002 * this.dustSettings[i].speed) * this.dustSettings[i].sinZR) 
+      this.dustSettings[i].sinZ = this.dustSettings[i].sinZ + (( 0.002 * this.dustSettings[i].speed) * this.dustSettings[i].sinZR)
 
       vert.x = this.dustSettings[i].startX + ( Math.sin(this.dustSettings[i].sinX) * this.dustSettings[i].rangeX )
       vert.y = this.dustSettings[i].startY + ( Math.sin(this.dustSettings[i].sinY) * this.dustSettings[i].rangeY )
